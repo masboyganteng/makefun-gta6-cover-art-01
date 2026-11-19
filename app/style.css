@@ -1,0 +1,180 @@
+/* Vice Cover Studio — editor chrome. Dark neon UI; the cover art itself is drawn on canvas. */
+:root {
+  --bg: #0d0b14;
+  --bg2: #14101f;
+  --card: #1a1428;
+  --line: #2c2340;
+  --ink: #f5f0ff;
+  --muted: #a99ec4;
+  --pink: #ff2e88;
+  --cyan: #22d3ee;
+  --amber: #ffb020;
+  --radius: 14px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background:
+    radial-gradient(900px 480px at 85% -10%, rgba(255, 46, 136, .22), transparent 60%),
+    radial-gradient(800px 500px at -10% 0%, rgba(34, 211, 238, .16), transparent 60%),
+    linear-gradient(180deg, #120e1d 0%, var(--bg) 40%);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+}
+h1, h2 { margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+
+/* ---- header ---- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 22px; border-bottom: 1px solid var(--line);
+  background: rgba(13, 11, 20, .75); backdrop-filter: blur(6px);
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.brand-mark {
+  flex: 0 0 auto; width: 46px; height: 46px; border-radius: 12px;
+  display: grid; place-items: center;
+  font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900; font-size: 19px; letter-spacing: .5px; color: #fff;
+  background: linear-gradient(135deg, #ff2e88 0%, #ff7a18 55%, #22d3ee 130%);
+  box-shadow: 0 0 22px rgba(255, 46, 136, .55);
+}
+.brand h1 {
+  font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  font-size: 21px; letter-spacing: 2.5px; line-height: 1;
+  background: linear-gradient(90deg, #fff 10%, #ffd166 45%, #ff2e88 80%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tagline { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+.top-actions { display: flex; gap: 10px; flex: 0 0 auto; }
+
+/* ---- buttons ---- */
+.btn {
+  border: 1px solid var(--line); background: #241b38; color: var(--ink);
+  border-radius: 10px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 14px;
+}
+.btn:hover { border-color: var(--pink); box-shadow: 0 0 0 1px var(--pink) inset; }
+.btn.primary {
+  background: linear-gradient(135deg, #ff2e88, #ff7a18);
+  border-color: transparent; color: #fff;
+  box-shadow: 0 6px 22px rgba(255, 46, 136, .4);
+}
+.btn.primary:hover { filter: brightness(1.12); box-shadow: 0 6px 26px rgba(255, 46, 136, .6); }
+.btn.ghost { background: transparent; }
+.btn.big { width: 100%; padding: 13px 14px; font-size: 15px; margin-top: 10px; }
+.btn.active { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan) inset, 0 0 14px rgba(34, 211, 238, .35); }
+.btn:disabled { opacity: .45; cursor: default; }
+
+/* ---- main layout ---- */
+.steps {
+  list-style: none; display: flex; gap: 8px; margin: 0 0 12px; padding: 0;
+}
+.steps li {
+  flex: 1; text-align: center; font-size: 13px; color: var(--muted);
+  background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+  padding: 7px 6px;
+}
+.steps li b {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, #ff2e88, #ff7a18); color: #fff;
+  font-size: 11px; margin-right: 6px;
+}
+.layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) 348px; gap: 20px;
+  max-width: 1280px; margin: 0 auto; padding: 20px 22px 8px; align-items: start;
+}
+.stage { min-width: 0; }
+.canvas-wrap {
+  position: relative; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line); background: #050308;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .55);
+}
+#preview { display: block; width: 100%; height: auto; cursor: grab; touch-action: none; }
+#preview.dragging { cursor: grabbing; }
+.stage-hint {
+  position: absolute; left: 10px; bottom: 10px; padding: 6px 10px; border-radius: 999px;
+  background: rgba(5, 3, 8, .72); color: #e8e2ff; font-size: 12px; pointer-events: none;
+}
+.panel-bar { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.panel-chip {
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600;
+}
+.panel-chip:hover { color: var(--ink); border-color: var(--pink); }
+.panel-chip.active { color: #fff; border-color: var(--pink); background: #3a1440; }
+.status { color: var(--muted); font-size: 13px; margin: 12px 2px 0; min-height: 18px; }
+
+/* ---- control cards ---- */
+.controls { display: flex; flex-direction: column; gap: 14px; }
+.card {
+  background: linear-gradient(180deg, var(--card), #171126);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px;
+}
+.card h2 {
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan);
+  margin-bottom: 12px;
+}
+.card h2 + h2 { margin-top: 16px; }
+.dropzone {
+  display: block; border: 1.5px dashed #4a3a6e; border-radius: 10px; padding: 16px 12px;
+  text-align: center; cursor: pointer; background: rgba(34, 211, 238, .04);
+}
+.dropzone:hover, .dropzone.over { border-color: var(--pink); background: rgba(255, 46, 136, .08); }
+.drop-big { display: block; font-weight: 700; font-size: 15px; }
+.drop-small { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+.photo-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.photo-thumb {
+  width: 64px; height: 64px; object-fit: cover; border-radius: 9px; cursor: pointer;
+  border: 2px solid transparent; background: #000;
+}
+.photo-thumb:hover { border-color: var(--pink); }
+.photo-thumb.active { border-color: var(--cyan); box-shadow: 0 0 12px rgba(34, 211, 238, .5); }
+.row { display: flex; gap: 8px; margin-top: 10px; }
+.row .btn { flex: 1; }
+.hint { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 10px 0 0; }
+
+.choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.choice-grid.sizes { grid-template-columns: repeat(3, 1fr); }
+.choice {
+  border: 1px solid var(--line); background: #241b38; border-radius: 10px;
+  padding: 9px 8px; cursor: pointer; text-align: center;
+}
+.choice:hover { border-color: var(--pink); }
+.choice.active { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan) inset; }
+.choice .name { display: block; font-weight: 700; font-size: 13px; }
+.choice .sub { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+.grade-swatch {
+  height: 26px; border-radius: 7px; margin-bottom: 6px;
+  border: 1px solid rgba(255, 255, 255, .25);
+}
+.toggles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; margin-top: 12px; }
+.toggles label { font-size: 13px; color: var(--muted); cursor: pointer; }
+.toggles input { accent-color: var(--pink); }
+
+.field { display: block; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+.field input[type="text"], .field select {
+  display: block; width: 100%; margin-top: 5px; padding: 9px 10px;
+  background: #0f0b1a; border: 1px solid var(--line); border-radius: 9px; color: var(--ink);
+}
+.field input[type="text"]:focus, .field select:focus { outline: none; border-color: var(--cyan); }
+.field input[type="range"] { display: block; width: 100%; margin-top: 6px; accent-color: var(--pink); }
+
+.foot { max-width: 1280px; margin: 0 auto; padding: 10px 22px 26px; color: var(--muted); font-size: 12px; }
+
+/* ---- shot mode: full-frame cover, no editor chrome ---- */
+body.shot-cover { background: #050308; }
+body.shot-cover .topbar, body.shot-cover .controls, body.shot-cover .foot,
+body.shot-cover .panel-bar, body.shot-cover .status, body.shot-cover .stage-hint,
+body.shot-cover .steps { display: none !important; }
+body.shot-cover .layout { display: block; max-width: none; padding: 0; margin: 0; }
+body.shot-cover .stage { margin: 0; }
+body.shot-cover .canvas-wrap { border: 0; border-radius: 0; box-shadow: none; background: #050308; }
+body.shot-cover #preview { width: 100vw; height: 100vh; object-fit: contain; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .brand h1 { font-size: 17px; }
+  .tagline { display: none; }
+}

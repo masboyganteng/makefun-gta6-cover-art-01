@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice Cover Studio — GTA-style cover art maker</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">VC</span>
+    <div>
+      <h1>VICE COVER STUDIO</h1>
+      <p class="tagline">Turn any photo into GTA-style cover art. Offline — your photos never leave this machine.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="randomizeBtn" type="button" class="btn ghost" title="Shuffle layout, grade and title style">🎲 Randomize</button>
+    <button id="exportBtn" type="button" class="btn primary" title="Download the cover as a PNG">⬇ Export PNG</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="stage" aria-label="Cover preview">
+    <ol class="steps">
+      <li><b>1</b> Add your photos</li>
+      <li><b>2</b> Pick a layout &amp; grade</li>
+      <li><b>3</b> Export the PNG</li>
+    </ol>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="preview" width="960" height="960" aria-label="Live cover preview"></canvas>
+      <div class="stage-hint" id="stageHint">Click a panel to select it · drag to move the photo · scroll to zoom</div>
+    </div>
+    <div class="panel-bar" id="panelBar" aria-label="Panels"></div>
+    <p class="status" id="status" role="status">Load a photo to begin — or try the samples below.</p>
+  </section>
+
+  <aside class="controls" aria-label="Cover controls">
+    <section class="card" id="photosCard">
+      <h2>1 · Photos</h2>
+      <label class="dropzone" id="dropzone" for="photoInput">
+        <span class="drop-big">＋ Add photos</span>
+        <span class="drop-small">Drop images here, or click to browse. JPG / PNG / WebP.</span>
+        <input id="photoInput" type="file" accept="image/*" multiple hidden>
+      </label>
+      <div class="photo-row" id="photoRow"></div>
+      <div class="row">
+        <button id="sampleBtn" type="button" class="btn">Load sample photos</button>
+        <button id="clearPhotosBtn" type="button" class="btn ghost">Clear</button>
+      </div>
+      <p class="hint">Click a photo, then a panel, to place it. One photo can fill every panel, or each panel its own.</p>
+    </section>
+
+    <section class="card">
+      <h2>2 · Layout</h2>
+      <div class="choice-grid" id="layoutGrid"></div>
+      <h2>3 · Colour grade</h2>
+      <div class="choice-grid" id="gradeGrid"></div>
+      <div class="toggles">
+        <label><input type="checkbox" id="halftoneToggle" checked> Halftone dots</label>
+        <label><input type="checkbox" id="grainToggle" checked> Film grain</label>
+        <label><input type="checkbox" id="vignetteToggle" checked> Vignette</label>
+        <label><input type="checkbox" id="frameToggle" checked> White frame</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4 · Caption</h2>
+      <label class="field">Title
+        <input id="titleInput" type="text" maxlength="24" value="SUNSET HEIST" autocomplete="off">
+      </label>
+      <label class="field">Subtitle
+        <input id="subtitleInput" type="text" maxlength="40" value="Vice City" autocomplete="off">
+      </label>
+      <label class="field">Title style
+        <select id="titleStyleSelect">
+          <option value="sunset">Sunset gradient</option>
+          <option value="neon">Neon outline</option>
+          <option value="solid">Solid white</option>
+          <option value="chrome">Chrome</option>
+        </select>
+      </label>
+      <label class="field">Title size
+        <input id="titleSizeSlider" type="range" min="60" max="140" value="100">
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>5 · Post size</h2>
+      <div class="choice-grid sizes" id="sizeGrid"></div>
+      <label class="field">Selected panel zoom
+        <input id="zoomSlider" type="range" min="100" max="300" value="100">
+      </label>
+      <div class="row">
+        <button id="fitBtn" type="button" class="btn">Reset crop</button>
+        <button id="shufflePhotosBtn" type="button" class="btn">Shuffle photos</button>
+      </div>
+      <button id="exportBtn2" type="button" class="btn primary big">⬇ Export PNG — <span id="exportSizeLabel">1080 × 1080</span></button>
+      <p class="hint">Export writes a full-resolution PNG straight to your downloads. No upload, no watermark.</p>
+    </section>
+  </aside>
+</main>
+
+<footer class="foot">
+  <p>VICE COVER STUDIO · an original cover maker. No Rockstar Games logo, artwork or font — all lettering and art drawn by this app.</p>
+</footer>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
